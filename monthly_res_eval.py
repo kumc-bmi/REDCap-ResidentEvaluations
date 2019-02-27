@@ -6,11 +6,45 @@ import sys
 import operator
 import csv
 import os.path
+import smtplib
+from os.path import basename
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formatdate
+
 
 # Function for making api call
 def api(url, data):
     req = requests.post(url, data)
     return json.loads(req.content)
+
+
+# Send email
+def send_report(from_email, to_email, file_name):
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = file_name.split(".")[0]
+
+    text = "Attached is a CSV document containing evaluations done on you during the last month. " \
+           "\n\nThank you,\nMISupport"
+
+    msg.attach(MIMEText(text))
+
+    with open(file_name, "rb") as fil:
+        part = MIMEApplication(
+            fil.read(),
+            Name=basename(file_name)
+        )
+        # After the file is closed
+    part['Content-Disposition'] = 'attachment; filename="%s"' % basename(file_name)
+    msg.attach(part)
+
+    smtp = smtplib.SMTP('smtp.kumc.edu')
+    smtp.sendmail(from_email, to_email, msg.as_string())
+    smtp.close()
 
 
 # function for generating CSV
@@ -64,7 +98,7 @@ def get_residents(evals):
         datetm = datetime.datetime.strptime(res_eval_date, "%Y-%m-%d")
 
         # If the date of the surgery being evaluated happens in the last month, add that eval to the list to be exported
-        if (datetime.datetime.now() - datetm).days <= 1000: # <CHANGE_ME - 1000 only for testing> days_in_month:
+        if (datetime.datetime.now() - datetm).days <= days_in_month:
             resident_evals[res_eval['record_id']] = res_email
 
     return resident_evals
@@ -73,6 +107,7 @@ def get_residents(evals):
 # Sort evaluations by resident, generate CSV, and store it in the temp directory
 def generate_reports(evals, fields_to_export, api_con):
     sorted_evals = sorted(evals.items(), key=operator.itemgetter(1))
+    emails_and_files = {}
 
     for res_eval in sorted_evals:
         eval = get_eval(res_eval, api_con)
@@ -81,8 +116,10 @@ def generate_reports(evals, fields_to_export, api_con):
         resident_id = res_eval[1].split("@")[0]
         title = "Evaluation_Summary_{}_{}_{}".format(cur_date.month, cur_date.year, resident_id)
 
-        csv = add_to_csv(title, eval, fields_to_export)
-        print csv
+        csv_file = add_to_csv(title, eval, fields_to_export)
+        emails_and_files[res_eval[1]] = "{}.csv".format(title)
+
+    return emails_and_files
 
 
 # Get evaluation info via API
@@ -104,6 +141,15 @@ def get_eval(res_eval, api_con):
     return api(api_con[0], data)
 
 
+# queue emails, and delete files
+def queue_emails(emails_and_files):
+    for ef in emails_and_files.keys():
+        send_report(ef, emails_and_files[ef])
+
+    for ef in emails_and_files.keys():
+        os.remove(emails_and_files[ef])
+
+
 def main():
     # api_con = (api_url, api_key)
     api_con = (sys.argv[1], sys.argv[2])
@@ -121,15 +167,15 @@ def main():
         'returnFormat': 'json'
     }
 
-    fields_to_export = ('resident_kumc', 'training_year', 'rotation_kumc', 'surgery', 'second_surgery', 'complexity',
+    fields_to_export = ('resident_email', 'resident_kumc', 'training_year', 'rotation_kumc', 'surgery', 'second_surgery', 'complexity',
                       'pre_procedure_plan', 'steps', 'technical_performance', 'visuospatial_skills_instru',
                       'post_procedure_plan', 'communication', 'case_performed', 'critical_maneuvers',
                       'resident_is_able_to_safely', 'done_well', 'needs_improvement', 'real_time_eval')
 
     evals = api(api_con[0], data)
     resident_evals = get_residents(evals)
-
-    generate_reports(resident_evals, fields_to_export, api_con)
+    emails_and_files = generate_reports(resident_evals, fields_to_export, api_con)
+    queue_emails(emails_and_files)
 
 
 if __name__ == "__main__":
