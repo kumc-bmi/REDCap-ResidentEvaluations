@@ -142,9 +142,9 @@ def get_eval(res_eval, api_con):
 
 
 # queue emails, and delete files
-def queue_emails(emails_and_files):
+def queue_emails(from_email, emails_and_files):
     for ef in emails_and_files.keys():
-        send_report(ef, emails_and_files[ef])
+        send_report(from_email, ef, emails_and_files[ef])
 
     for ef in emails_and_files.keys():
         os.remove(emails_and_files[ef])
@@ -172,10 +172,12 @@ def main():
                       'post_procedure_plan', 'communication', 'case_performed', 'critical_maneuvers',
                       'resident_is_able_to_safely', 'done_well', 'needs_improvement', 'real_time_eval')
 
+    from_email = "misupport@kumc.edu"
+
     evals = api(api_con[0], data)
     resident_evals = get_residents(evals)
     emails_and_files = generate_reports(resident_evals, fields_to_export, api_con)
-    queue_emails(emails_and_files)
+    queue_emails(from_email, emails_and_files)
 
 
 if __name__ == "__main__":
