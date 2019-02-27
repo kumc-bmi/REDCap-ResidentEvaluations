@@ -15,7 +15,7 @@ def api(url, data):
 
 # function for generating CSV
 def add_to_csv(title, content, fields_to_export):
-    csv_file = "temp/{}.csv".format(title)
+    csv_file = "{}.csv".format(title)
 
     file_exists = False
 
@@ -79,7 +79,7 @@ def generate_reports(evals, fields_to_export, api_con):
 
         cur_date = datetime.datetime.now()
         resident_id = res_eval[1].split("@")[0]
-        title = "Evaluation Summary {} {} - {}".format(cur_date.month, cur_date.year, resident_id)
+        title = "Evaluation_Summary_{}_{}_{}".format(cur_date.month, cur_date.year, resident_id)
 
         csv = add_to_csv(title, eval, fields_to_export)
         print csv
