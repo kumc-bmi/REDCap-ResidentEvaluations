@@ -9,9 +9,9 @@ It's spring 2019 and resident Rich performed surgery 5 days ago:
 It's time to send evaluations for the month, so we run this script,
 giving it API access to the REDCap project:
 
-    >>> argv = 'script https://redcap/api SUPERSEKRET smtp.test.com mifake@url.com email text'.split()
+    >>> argv = 'script https://redcap/api api_key smtp.test.com mifake@url.com email text'.split()
     >>> io = MockIO(now, resident_email, date_of_surgery)
-    >>> main(argv, io.cwd, now, io.post, io.SMTP)
+    >>> main(argv, io.environ, io.cwd, now, io.post, io.SMTP)
     1 evaluations found to send
     Sent report to: rich@g.com
 
@@ -189,9 +189,9 @@ class REProject(object):
                       'resident_is_able_to_safely', 'done_well', 'needs_improvement', 'real_time_eval')
 
 
-def main(argv, cwd, now, post, SMTP):
-    [api_url, api_key, smtp_server, from_email, text] = argv[1:6]
-    api_con = (api_url, api_key)
+def main(argv, environ, cwd, now, post, SMTP):
+    [api_url, api_key_var, smtp_server, from_email, text] = argv[1:6]
+    api_con = (api_url, environ[api_key_var])
 
     data = {
         'token': api_con[1],
@@ -216,6 +216,9 @@ def main(argv, cwd, now, post, SMTP):
 
 
 class MockIO(object):
+
+    environ = {"api_key": "SUPERSEKRET"}
+
     def __init__(self, now, resident_email, date_of_surgery):
         fields = {f: 'junk'
                   for f in REProject.fields_to_export}
@@ -274,11 +277,12 @@ if __name__ == "__main__":
     def _script():
         import requests
         from sys import argv
+        from os import environ
         from smtplib import SMTP
         from datetime import datetime
         from pathlib import Path
 
         cwd = Path('.')
-        main(argv, cwd, datetime.now, requests.post, SMTP)
+        main(argv, environ, cwd, datetime.now, requests.post, SMTP)
 
     _script()
