@@ -9,7 +9,7 @@ It's spring 2019 and resident Rich performed surgery 5 days ago:
 It's time to send evaluations for the month, so we run this script,
 giving it API access to the REDCap project:
 
-    >>> argv = 'script https://redcap/api SUPERSEKRET'.split()
+    >>> argv = 'script https://redcap/api SUPERSEKRET smtp.test.com mifake@url.com email text'.split()
     >>> io = MockIO(now, resident_email, date_of_surgery)
     >>> main(argv, io.cwd, now, io.post, io.SMTP)
 
@@ -20,7 +20,7 @@ Now we can see that a CSV file got sent to Rich:
     ...     filename = msg.split('filename=')[1]
     ...     filename = filename.split('\n')[0]
     ...     print filename
-    misupport@kumc.edu rich@g.com
+    mifake@url.com rich@g.com
     "Evaluation_Summary_3_2019_rich.csv"
 
 """
@@ -47,15 +47,12 @@ def api(url, data, post):
 
 
 # Send email
-def send_report(from_email, to_email, file_path, cwd, SMTP):
+def send_report(from_email, to_email, file_path, cwd, SMTP, smtp_server, text):
     msg = MIMEMultipart()
     msg['From'] = from_email
     msg['To'] = to_email
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = file_path.splitext()[0]
-
-    text = "Attached is a CSV document containing evaluations done on you during the last month. " \
-           "\n\nThank you,\nMISupport"
 
     msg.attach(MIMEText(text))
 
@@ -68,7 +65,7 @@ def send_report(from_email, to_email, file_path, cwd, SMTP):
     part['Content-Disposition'] = 'attachment; filename="%s"' % file_path.name
     msg.attach(part)
 
-    smtp = SMTP('smtp.kumc.edu')
+    smtp = SMTP(smtp_server)
     smtp.sendmail(from_email, to_email, msg.as_string())
     smtp.close()
 
@@ -174,9 +171,9 @@ def get_eval(res_eval, api_con, post):
 
 
 # queue emails, and delete files
-def queue_emails(from_email, emails_and_files, cwd, SMTP):
+def queue_emails(from_email, emails_and_files, cwd, SMTP, smtp_server, text):
     for ef in emails_and_files.keys():
-        send_report(from_email, ef, emails_and_files[ef], cwd, SMTP)
+        send_report(from_email, ef, emails_and_files[ef], cwd, SMTP, smtp_server, text)
 
     for ef in emails_and_files.keys():
         emails_and_files[ef].remove()
@@ -190,8 +187,8 @@ class REProject(object):
 
 
 def main(argv, cwd, now, post, SMTP):
-    # api_con = (api_url, api_key)
-    api_con = (argv[1], argv[2])
+    [api_url, api_key, smtp_server, from_email, text] = argv[1:6]
+    api_con = (api_url, api_key)
 
     data = {
         'token': api_con[1],
@@ -206,14 +203,12 @@ def main(argv, cwd, now, post, SMTP):
         'returnFormat': 'json'
     }
 
-    from_email = "misupport@kumc.edu"
-
     evals = api(api_con[0], data, post)
     cur_date = now()
     resident_evals = get_residents(evals, cur_date)
 
     emails_and_files = generate_reports(resident_evals, REProject.fields_to_export, api_con, cur_date, cwd, post)
-    queue_emails(from_email, emails_and_files, cwd, SMTP)
+    queue_emails(from_email, emails_and_files, cwd, SMTP, smtp_server, text)
 
 
 class MockIO(object):
