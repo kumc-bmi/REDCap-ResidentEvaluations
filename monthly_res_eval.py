@@ -28,7 +28,6 @@ Now we can see that a CSV file got sent to Rich:
 """
 
 from json import loads, dumps
-import calendar
 import operator
 import csv
 from datetime import (
@@ -114,7 +113,6 @@ def add_to_csv(title, content, fields_to_export, cwd):
 # Retrieve residents from whole project, who have had a surgery evaluation in the last month
 def get_residents(evals, cur_date):
     resident_evals = {}
-    days_in_month = calendar.monthrange(cur_date.year, cur_date.month)[1]
 
     # Iterate through resident evaluations
     for res_eval in evals:
@@ -122,8 +120,7 @@ def get_residents(evals, cur_date):
         res_eval_date = res_eval['date_of_surgery']
         datetm = datetime.strptime(res_eval_date, "%Y-%m-%d")
 
-        # If the date of the surgery being evaluated happens in the last month, add that eval to the list to be exported
-        if (cur_date - datetm).days <= days_in_month:
+        if (cur_date - datetm).days <= 31:
             resident_evals[res_eval['record_id']] = res_email
 
     return resident_evals
