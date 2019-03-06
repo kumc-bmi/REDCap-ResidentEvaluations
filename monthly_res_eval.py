@@ -12,6 +12,8 @@ giving it API access to the REDCap project:
     >>> argv = 'script https://redcap/api SUPERSEKRET smtp.test.com mifake@url.com email text'.split()
     >>> io = MockIO(now, resident_email, date_of_surgery)
     >>> main(argv, io.cwd, now, io.post, io.SMTP)
+    1 evaluations found to send
+    Sent report to: rich@g.com
 
 Now we can see that a CSV file got sent to Rich:
 
@@ -67,6 +69,7 @@ def send_report(from_email, to_email, file_path, cwd, SMTP, smtp_server, text):
 
     smtp = SMTP(smtp_server)
     smtp.sendmail(from_email, to_email, msg.as_string())
+    print "Sent report to: {}".format(to_email)
     smtp.close()
 
 
@@ -208,6 +211,7 @@ def main(argv, cwd, now, post, SMTP):
     resident_evals = get_residents(evals, cur_date)
 
     emails_and_files = generate_reports(resident_evals, REProject.fields_to_export, api_con, cur_date, cwd, post)
+    print "{} evaluations found to send".format(emails_and_files.__len__())
     queue_emails(from_email, emails_and_files, cwd, SMTP, smtp_server, text)
 
 
