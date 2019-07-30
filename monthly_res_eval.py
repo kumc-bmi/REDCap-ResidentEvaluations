@@ -55,7 +55,9 @@ def send_report(from_email, to_email, file_path, cwd, SMTP, smtp_server, text):
     msg['From'] = from_email
     msg['To'] = to_email
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = file_path.splitext()[0]
+    print(file_path)
+    print(str(file_path))
+    msg['Subject'] = str(file_path).split(".")[0]
 
     msg.attach(MIMEText(text))
 
