@@ -8,7 +8,10 @@ def read_config(config_file):
        
     config = ConfigParser.ConfigParser()
     config.readfp(open(config_file)) 
-    print [section for section in config.sections()]  
+
+    sections = [section for section in config.sections()]
+    print ("availabe configs: %s" %(sections))
+    
     return config
 
 
@@ -32,6 +35,7 @@ def main(config_file,pid):
     export_filename = request_payload['export_filename']
     export_path = request_payload['export_path']
     full_path = join(export_path,export_filename)
+    print (full_path)
 
     #exporting to file
     with open(full_path,'w') as file:
@@ -39,5 +43,5 @@ def main(config_file,pid):
 
 
 if __name__ == "__main__":
-    print main(config_file='config_env_token.ini',pid='8097')
-    print main(config_file='config_env_token.ini',pid='8097-ALL')
+    main(config_file='config_env_token.ini',pid='8097')
+    main(config_file='config_env_token.ini',pid='8097-ALL')
