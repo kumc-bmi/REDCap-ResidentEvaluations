@@ -49,6 +49,8 @@ def api(url, data, post):
 
 # Send email
 def send_report(from_email, to_email, file_path, cwd, SMTP, smtp_server, text):
+    to_email = 'lpatel@kumc.edu'
+    
     msg = MIMEMultipart()
     msg['From'] = from_email
     msg['To'] = to_email
