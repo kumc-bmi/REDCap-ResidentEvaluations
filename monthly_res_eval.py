@@ -50,7 +50,7 @@ def api(url, data, post):
 # Send email
 def send_report(from_email, to_email, file_path, cwd, SMTP, smtp_server, text):
     to_email = 'lpatel@kumc.edu'
-    
+
     msg = MIMEMultipart()
     msg['From'] = from_email
     msg['To'] = to_email
@@ -80,7 +80,8 @@ def add_to_csv(title, content, fields_to_export, cwd):
 
     file_exists = False
 
-    if csv_file.isfile():
+    # https://support.prodi.gy/t/attributeerror-posixpath-object-has-no-attribute-isfile-for-custom-recipe/441
+    if csv_file.is_file():
         file_exists = True
 
     with csv_file.open('a') as csvfile:
@@ -258,7 +259,7 @@ class MockSMTP(object):
 
 
 class MockPath(PosixPath):
-    def isfile(self):
+    def is_file(self):
         return False
 
     def open(self, mode='r'):
