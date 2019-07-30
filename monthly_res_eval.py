@@ -83,8 +83,8 @@ def add_to_csv(title, content, fields_to_export, cwd):
     # https://support.prodi.gy/t/attributeerror-posixpath-object-has-no-attribute-isfile-for-custom-recipe/441
     if csv_file.is_file():
         file_exists = True
-
-    with csv_file.open('a') as csvfile:
+    # https://stackoverflow.com/questions/18449233/2-7-csv-module-wants-unicode-but-doesnt-want-unicode
+    with csv_file.open('ab') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',')
 
         # label row, only if file doesn't exist
