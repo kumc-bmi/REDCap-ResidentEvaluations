@@ -7,6 +7,7 @@ from os.path import join
 def read_config(config_file):
        
     config = ConfigParser.ConfigParser()
+    config.optionxform=str
     config.readfp(open(config_file)) 
 
     sections = [section for section in config.sections()]
@@ -27,7 +28,7 @@ def main(config_file,pid):
     
     #reading key from enviornment variable and replace string with key
     request_payload['token'] = environ[request_payload['token']]
-    
+
     #send request to redcap
     data_string = make_redcap_api_call(redcap_api_url,request_payload)
 
@@ -43,5 +44,6 @@ def main(config_file,pid):
 
 
 if __name__ == "__main__":
-    main(config_file='config_env_token.ini',pid='8097')
-    main(config_file='config_env_token.ini',pid='8097-ALL')
+    #main(config_file='config_env_token.ini',pid='8097')
+    #main(config_file='config_env_token.ini',pid='8097-ALL')
+    main(config_file='config_env_token.ini',pid='8693-resident-eval')
