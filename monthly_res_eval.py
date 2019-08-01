@@ -35,7 +35,6 @@ from datetime import (
     datetime  # for strptime
 )
 from pathlib import PosixPath
-from os import remove
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -178,9 +177,6 @@ def get_eval(res_eval, api_con, post):
 def queue_emails(from_email, emails_and_files, cwd, SMTP, smtp_server, text):
     for ef in emails_and_files.keys():
         send_report(from_email, ef, emails_and_files[ef], cwd, SMTP, smtp_server, text)
-
-    for ef in emails_and_files.keys():
-        remove(str(emails_and_files[ef]))
 
 
 class REProject(object):
