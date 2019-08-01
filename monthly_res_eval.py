@@ -53,7 +53,7 @@ def send_report(from_email, to_email, file_path, cwd, SMTP, smtp_server, text):
     msg['From'] = from_email
     msg['To'] = to_email
     msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = file_path.splitext()[0]
+    msg['Subject'] = str(file_path).split(".")[0]
 
     msg.attach(MIMEText(text))
 
@@ -78,10 +78,11 @@ def add_to_csv(title, content, fields_to_export, cwd):
 
     file_exists = False
 
-    if csv_file.isfile():
+    # https://support.prodi.gy/t/attributeerror-posixpath-object-has-no-attribute-isfile-for-custom-recipe/441
+    if csv_file.is_file():
         file_exists = True
-
-    with csv_file.open('a') as csvfile:
+    # https://stackoverflow.com/questions/18449233/2-7-csv-module-wants-unicode-but-doesnt-want-unicode
+    with csv_file.open('ab') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',')
 
         # label row, only if file doesn't exist
@@ -159,7 +160,7 @@ def get_eval(res_eval, api_con, post):
         'format': 'json',
         'type': 'flat',
         'records[0]': res_eval[0],
-        'rawOrLabel': 'raw',
+        'rawOrLabel': 'label',
         'rawOrLabelHeaders': 'raw',
         'exportCheckboxLabel': 'false',
         'exportSurveyFields': 'false',
@@ -174,9 +175,6 @@ def get_eval(res_eval, api_con, post):
 def queue_emails(from_email, emails_and_files, cwd, SMTP, smtp_server, text):
     for ef in emails_and_files.keys():
         send_report(from_email, ef, emails_and_files[ef], cwd, SMTP, smtp_server, text)
-
-    for ef in emails_and_files.keys():
-        emails_and_files[ef].remove()
 
 
 class REProject(object):
@@ -256,7 +254,7 @@ class MockSMTP(object):
 
 
 class MockPath(PosixPath):
-    def isfile(self):
+    def is_file(self):
         return False
 
     def open(self, mode='r'):
