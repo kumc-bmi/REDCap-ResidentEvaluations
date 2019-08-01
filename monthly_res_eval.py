@@ -163,7 +163,7 @@ def get_eval(res_eval, api_con, post):
         'format': 'json',
         'type': 'flat',
         'records[0]': res_eval[0],
-        'rawOrLabel': 'raw',
+        'rawOrLabel': 'label',
         'rawOrLabelHeaders': 'raw',
         'exportCheckboxLabel': 'false',
         'exportSurveyFields': 'false',
