@@ -5,5 +5,4 @@
 *secrets*
 *.DS_Store
 env*
-.vscode*
 export*
