@@ -8,3 +8,4 @@ pathlib==1.0.1
 # https://dev.to/j0nimost/setting-up-pep8-and-pylint-on-vs-code-34h
 pep8
 pylint
+autopep8
