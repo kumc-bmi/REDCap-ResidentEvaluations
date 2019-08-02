@@ -4,6 +4,8 @@ idna==2.8
 requests==2.21.0
 urllib3==1.24.1
 pathlib==1.0.1
+pandas
+numpy
 # testing/devlopment
 # https://dev.to/j0nimost/setting-up-pep8-and-pylint-on-vs-code-34h
 pep8
