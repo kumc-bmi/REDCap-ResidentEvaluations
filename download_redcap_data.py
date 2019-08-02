@@ -2,6 +2,7 @@ import requests
 import ConfigParser
 from os import environ
 from os.path import join
+from sys import argv
 
 
 def make_redcap_api_call(redcap_api_url, data):
@@ -73,6 +74,11 @@ def main(config_file,pid):
 
 
 if __name__ == "__main__":
-    #main(config_file='config_env_token.ini',pid='8097')
-    #main(config_file='config_env_token.ini',pid='8097-ALL')
-    main(config_file='config_env_token.ini',pid='8693-resident-eval')
+    if len(argv) != 3:
+        print ("""
+                Wrong format or arguments
+                please try like 'python download_recap_data.py config_file pid'
+               """)
+    
+    [config_file, pid] = argv[1:]
+    main(config_file, pid)
