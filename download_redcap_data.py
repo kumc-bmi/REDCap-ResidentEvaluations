@@ -66,11 +66,12 @@ def main(config_file,pid):
     export_filename = request_payload['export_filename']
     export_path = request_payload['export_path']
     full_path = join(export_path,export_filename)
-    print (full_path)
 
     #exporting to file
     with open(full_path,'w') as file:
         file.write(data_string)
+
+    print ("File has been downloaded at %s ."%(full_path))
 
 
 if __name__ == "__main__":

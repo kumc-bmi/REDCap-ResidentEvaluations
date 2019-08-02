@@ -80,6 +80,10 @@ def send_emails(attachment_export_dir, from_email, subject,
         to_email = path_filename_email[path][1]
         send_email(from_email, to_email, subject,
                    body_text, path, smtp_server)
+    
+    if len(error_filenames)!=0:
+        raise Exception(
+            "Could not send email to following email address : %s " % (error_filenames))
 
 
 def main(src_data, attachment_export_dir, from_email, subject,
@@ -93,7 +97,6 @@ def main(src_data, attachment_export_dir, from_email, subject,
                 body_text, smtp_server)
 
 if __name__ == "__main__":
-    print (argv)
     [src_data, attachment_export_dir, from_email, subject,
       smtp_server, body_text] = argv[1:]
 
