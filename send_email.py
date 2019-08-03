@@ -9,7 +9,6 @@ from email.utils import formatdate
 
 def send_email(from_email, to_email, subject, body_text, file_path, smtp_server):
 
-    to_email = 'lpatel@kumc.edu'
 
     msg = MIMEMultipart()
     msg['From'] = from_email
