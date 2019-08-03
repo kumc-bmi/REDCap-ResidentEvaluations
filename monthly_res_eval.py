@@ -55,9 +55,18 @@ def get_path_filename_email(folder):
     for filename in os.listdir(folder):
         try:
             path = os.path.join(folder, filename)
+
             email = filename.split('.csv')[0].split('_')[1]
-            output[path] = [filename, email]
+            email_formate_match = re.match(
+                '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$'
+                , email)
+
+            if email_formate_match == None:
+                raise ValueError('Bad email syntax in %s ' % (filename))
+            else:
+                output[path] = [filename, email]
         except:
+            print('Bad email syntax in %s ' % (filename))
             error_filenames.append(filename)
     print ("Following files have correct formate: %s \n" % (output.keys()))
     print ("Following files have wrong formate: %s \n" % (error_filenames))
