@@ -23,7 +23,7 @@ mkdir -p export/attachments
 Take look examples at config_env_token.ini . Never stored token in config file, instead use environment variable.
 download_redcap_data.py is pretty flexible, you can pass all payload request parameters from https://redcap.kumc.edu/redcap_v8.5.24/API/playground.php?pid=XYZ.
 
-Example: I have created a report in redcap project, and I want download that report as csv. Go to the above link of the project. You will find redcap will help you create following parameters. Keep in mind token_8693 is not real token, it is stored in env vairable.
+Example: I have created a report in redcap project, and I want download that report as csv. Go to the above link of the project. You will find redcap will help you create following parameters. Keep in mind token_8693 is not real token, it is stored in env variable.
 ```
 token: token_8693
 content: report
@@ -49,14 +49,14 @@ rawOrLabelHeaders: raw
 exportCheckboxLabel: true
 returnFormat: json
 ```
-## To downlod data
+## To download data
 `python download_redcap_data.py 'config_env_token.ini' '8693-resident-eval-183-days'`
 
 ## To send email
 `python send_email.py $from_email $to_email $subject $body_text $file_path $smtp_server`
 
 ## Resident Evaluation (https://bmi-work.kumc.edu/work/ticket/5569)
-Upto this all code was generic, and can be used by any redcap project. From now on code is for resident evaluation project only.
+Up to this all code was generic, and can be used by any redcap project. From now on code is for resident evaluation project only.
 ```
 src_data='export/8693-resident-eval-31-days.csv'
 attachment_export_dir='export/attachments/'
