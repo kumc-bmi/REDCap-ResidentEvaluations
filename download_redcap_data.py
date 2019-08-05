@@ -65,8 +65,8 @@ def main(config_file, pid, logging, requests, join, environ, Path):
     full_path = join(export_path,export_filename)
 
     #exporting to file
-    with open(full_path,'w') as file:
-        file.write(data_string)
+    full_path = Path(full_path)
+    full_path.write_bytes(data_string)
 
     logging.info("File has been downloaded at %s ."%(full_path))
 
