@@ -30,11 +30,11 @@ def make_redcap_api_call(redcap_api_url, data, logging, post):
             """ % (e))
 
             
-def read_config(config_file, logging):
+def read_config(config_file, logging, Path):
        
     config = ConfigParser.ConfigParser()
     config.optionxform = str
-    config.read(config_file)
+    config.readfp(Path(config_file).open(), str(config_file))
 
     sections = [section for section in config.sections()]
     logging.info("availabe configs: %s" % (sections))
@@ -45,7 +45,7 @@ def read_config(config_file, logging):
 def main(config_file, pid, logging, post, join, environ, Path):
     
     # read config file
-    config = read_config(config_file, logging)
+    config = read_config(config_file, logging, Path)
     
     # parse config
     redcap_api_url = config._sections['global']['redcap_api_url']
