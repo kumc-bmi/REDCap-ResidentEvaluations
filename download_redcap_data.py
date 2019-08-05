@@ -1,7 +1,7 @@
 import ConfigParser
 
 
-def make_redcap_api_call(redcap_api_url, data, logging, requests):
+def make_redcap_api_call(redcap_api_url, data, logging, post):
     """
 
     >>> make_redcap_api_call(redcap_api_url='https://redcap.kumc.edu/api/', data = { \
@@ -15,7 +15,7 @@ def make_redcap_api_call(redcap_api_url, data, logging, requests):
     """
 
     try:
-        response = requests.post(redcap_api_url, data)
+        response = post(redcap_api_url, data)
         if response.status_code == 200:
             return response.content
         else:
@@ -42,7 +42,7 @@ def read_config(config_file, logging):
     return config
 
 
-def main(config_file, pid, logging, requests, join, environ, Path):
+def main(config_file, pid, logging, post, join, environ, Path):
     
     # read config file
     config = read_config(config_file, logging)
@@ -56,7 +56,7 @@ def main(config_file, pid, logging, requests, join, environ, Path):
 
     # send request to redcap
     data_string = make_redcap_api_call(
-        redcap_api_url, request_payload, logging, requests)
+        redcap_api_url, request_payload, logging, post)
 
     # creating export path and filename
     export_filename = request_payload['export_filename']
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         '''
 
         import logging
-        import requests
+        from requests import post
         from os import environ
         from os.path import join
         from sys import argv
@@ -91,6 +91,6 @@ if __name__ == "__main__":
              please try like 'python download_recap_data.py config_file pid""")
         
         [config_file, pid] = argv[1:]
-        main(config_file, pid, logging, requests, join, environ, Path)
+        main(config_file, pid, logging, post, join, environ, Path)
 
     _main_ocap()
