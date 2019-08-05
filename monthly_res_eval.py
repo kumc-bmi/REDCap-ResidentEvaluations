@@ -12,7 +12,7 @@ def create_email_name_filed(df):
     output : df
     
     create coalesce email field using resident_sitename_kumc and  resident_email
-    create colesce name field using resident_sitename
+    create coalesce name field using resident_sitename
     
     '''
     df['email'] = np.nan
@@ -76,12 +76,7 @@ def get_path_filename_email(folder):
 
 def send_emails(attachment_export_dir, from_email, subject,
                 body_text, smtp_server):
-    '''
-    1. get all attachments full path, filename, and email
-    2. print full path
-    3. find out which files will not be sent back
-    4. 
-    '''
+   
     path_filename_email, error_filenames = get_path_filename_email(
         attachment_export_dir)
 
@@ -92,7 +87,8 @@ def send_emails(attachment_export_dir, from_email, subject,
     
     if len(error_filenames)!=0:
         raise Exception(
-            "Could not send email to following email address : %s " % (error_filenames))
+            "Could not send email to following email address : %s " %
+            (error_filenames))
 
 
 def main(src_data, attachment_export_dir, from_email, subject,
@@ -107,7 +103,7 @@ def main(src_data, attachment_export_dir, from_email, subject,
 
 if __name__ == "__main__":
     [src_data, attachment_export_dir, from_email, subject,
-      smtp_server, body_text] = argv[1:]
+        smtp_server, body_text] = argv[1:]
 
     main(src_data, attachment_export_dir, from_email, subject,
          body_text, smtp_server)

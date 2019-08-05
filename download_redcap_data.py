@@ -23,7 +23,7 @@ def make_redcap_api_call(redcap_api_url, data, logging, requests):
                             (response.status_code, response.content))
 
     except Exception as e:
-        logging.error( """
+        logging.error("""
             redcap rest call was unsuccessful
             or target server is down/ check configuration
             %s
@@ -33,7 +33,7 @@ def make_redcap_api_call(redcap_api_url, data, logging, requests):
 def read_config(config_file, logging):
        
     config = ConfigParser.ConfigParser()
-    config.optionxform=str
+    config.optionxform = str
     config.read(config_file)
 
     sections = [section for section in config.sections()]
@@ -47,32 +47,30 @@ def main(config_file, pid, logging, requests, join, environ, Path):
     # read config file
     config = read_config(config_file, logging)
     
-
-    # parse config 
+    # parse config
     redcap_api_url = config._sections['global']['redcap_api_url']
     request_payload = dict(config.items(pid))
     
-    #reading key from environment variable and replace string with key
+    # reading key from environment variable and replace string with key
     request_payload['token'] = environ[request_payload['token']]
 
-    #send request to redcap
+    # send request to redcap
     data_string = make_redcap_api_call(
         redcap_api_url, request_payload, logging, requests)
 
     # creating export path and filename
     export_filename = request_payload['export_filename']
     export_path = request_payload['export_path']
-    full_path = join(export_path,export_filename)
+    full_path = join(export_path, export_filename)
 
-    #exporting to file
+    # exporting to file
     full_path = Path(full_path)
     full_path.write_bytes(data_string)
 
-    logging.info("File has been downloaded at %s ."%(full_path))
+    logging.info("File has been downloaded at %s ." % (full_path))
 
 
 if __name__ == "__main__":
-
 
     def _main_ocap():
         '''
