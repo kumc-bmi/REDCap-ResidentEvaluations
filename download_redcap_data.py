@@ -34,7 +34,7 @@ def read_config(config_file, logging):
        
     config = ConfigParser.ConfigParser()
     config.optionxform=str
-    config.readfp(open(config_file)) 
+    config.read(config_file)
 
     sections = [section for section in config.sections()]
     logging.info("availabe configs: %s" % (sections))
@@ -42,10 +42,10 @@ def read_config(config_file, logging):
     return config
 
 
-def main(config_file, pid, logging, requests, join, environ):
+def main(config_file, pid, logging, requests, join, environ, Path):
     
     # read config file
-    config = read_config(config_file,logging)
+    config = read_config(config_file, logging)
     
 
     # parse config 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         from os import environ
         from os.path import join
         from sys import argv
-        #from pathlib import path
+        from pathlib2 import Path
 
         logging.basicConfig(level=logging.DEBUG)
 
@@ -93,6 +93,6 @@ if __name__ == "__main__":
              please try like 'python download_recap_data.py config_file pid""")
         
         [config_file, pid] = argv[1:]
-        main(config_file, pid, logging, requests, join, environ)
+        main(config_file, pid, logging, requests, join, environ, Path)
 
     _main_ocap()
