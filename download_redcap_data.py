@@ -2,7 +2,6 @@ import ConfigParser
 
 
 def make_redcap_api_call(redcap_api_url, data, logging, post):
-    """
 
     try:
         response = post(redcap_api_url, data)
