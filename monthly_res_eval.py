@@ -101,6 +101,7 @@ def main(src_data, attachment_export_dir, from_email, subject,
     send_emails(attachment_export_dir, from_email, subject,
                 body_text, smtp_server)
 
+ 
 if __name__ == "__main__":
     [src_data, attachment_export_dir, from_email, subject,
         smtp_server, body_text] = argv[1:]
