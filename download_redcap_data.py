@@ -4,16 +4,6 @@ import ConfigParser
 def make_redcap_api_call(redcap_api_url, data, logging, post):
     """
 
-    >>> make_redcap_api_call(redcap_api_url='https://redcap.kumc.edu/api/', data = { \
-        'content' : 'exportFieldNames' \
-        ,'format' : 'json' \
-        ,'returnFormat' : 'json' \
-        ,'field' : 'email_id' \
-        ,'token' : 'token' \
-        })
-    '[{"original_field_name":"email_id","choice_value":"","export_field_name":"email_id"}]'
-    """
-
     try:
         response = post(redcap_api_url, data)
         if response.status_code == 200:
