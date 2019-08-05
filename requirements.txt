@@ -1,5 +1,6 @@
 pandas==0.24.2
 requests==2.22.0
+pathlib2==2.3.4
 # testing/devlopment
 # https://dev.to/j0nimost/setting-up-pep8-and-pylint-on-vs-code-34h
 pep8
