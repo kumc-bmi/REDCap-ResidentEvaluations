@@ -1,3 +1,5 @@
+set -x
+# rm -rf export
 mkdir -p export/attachments
 python3 -m venv env
 source env/bin/activat
