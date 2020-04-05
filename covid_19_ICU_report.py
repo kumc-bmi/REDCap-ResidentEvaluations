@@ -20,7 +20,7 @@ results = pd.read_csv('export/out.txt', sep='\t').sort_values(['site'])
 results = results[['site', 'site_id', 'covidpend_icu_bed', 'covidpend_icu_bed_vent', 'covidcfrm_icu_bed', 'covidcfrm_icu_bed_vent',
                    'noncovid_icu', 'noncovid_icu_vent', 'icu_bed_num', 'ventilator_num', 'icu_bed_surge_num', 'ventilator_surge_num']]  # 'site_id'
 
-df = pd.read_csv('export/16558-COVID-19-ICU-surge-capacity-survey.csv')
+
 df.site = df.site + df.site_oth.astype(str)
 latest_survey_by_site = df.groupby(['site']).dte_assessed.max()
 latest_survey_by_site = pd.DataFrame(latest_survey_by_site).reset_index()
@@ -32,3 +32,74 @@ latest_export_df = latest_df[['site', 'record_id', 'covidpend_icu_bed', 'covidpe
 
 latest_export_df.to_csv('export/output_LP.csv', index=False)
 results.to_csv('export/output_original.csv', index=False)
+
+# # NEW method
+#
+#
+
+# +
+import pandas as pd
+
+df = pd.read_csv('export/16558-COVID-19-ICU-surge-capacity-survey.csv')
+
+record_id_site = df[['record_id','site','site_oth']]
+record_id_site.site = record_id_site.site + record_id_site.site_oth.astype(str)
+del record_id_site['site_oth']
+
+record_id_site = record_id_site[record_id_site.site.notnull()].sort_values('record_id')
+record_id_site
+
+# +
+censud_cols = ['record_id','redcap_repeat_instrument','redcap_repeat_instance',
+               'covidpend_icu_bed', 'covidpend_icu_bed_vent', 'covidcfrm_icu_bed', 'covidcfrm_icu_bed_vent']
+surge_cols =['record_id','site','site_oth','redcap_repeat_instrument','redcap_repeat_instance',
+             'noncovid_icu', 'noncovid_icu_vent', 'icu_bed_num', 'ventilator_num', 'icu_bed_surge_num', 'ventilator_surge_num']
+
+census = df[df.redcap_repeat_instance.notnull()] [censud_cols]
+surge = df[df.redcap_repeat_instance.isnull()] [surge_cols]
+
+
+census = census.join(surge,on='record_id',lsuffix='', rsuffix='_s')
+censud_cols = ['site','site_oth'] + censud_cols
+
+census = census[censud_cols]
+census.site = census.site + census.site_oth.astype(str)
+
+census.sort_values(['site','record_id'])
+
+# +
+df_static = df [df.covidpend_icu_bed.notna()| \
+df.covidpend_icu_bed_vent.notna()| \
+df.covidcfrm_icu_bed.notna()| \
+df.covidcfrm_icu_bed_vent.notna()| \
+df.noncovid_icu.notna()| \
+df.noncovid_icu_vent.notna()] 
+
+static_data_cols = ['site', 'record_id','covidpend_icu_bed','covidpend_icu_bed_vent','covidcfrm_icu_bed','covidcfrm_icu_bed_vent','noncovid_icu','noncovid_icu_vent']
+# -
+
+static_data_cols
+
+df_static[static_data_cols]
+
+df.columns
+
+results.columns.tolist()
+
+df = pd.read_csv('export/16558-COVID-19-ICU-surge-capacity-survey.csv')
+
+
+
+
+
+
+
+print(results.columns.tolist())
+
+
+
+['site', 'site_id', 
+ 'covidpend_icu_bed', 'covidpend_icu_bed_vent', 'covidcfrm_icu_bed', 'covidcfrm_icu_bed_vent', 
+ 'noncovid_icu', 'noncovid_icu_vent', 'icu_bed_num', 'ventilator_num', 'icu_bed_surge_num', 'ventilator_surge_num']
+
+
