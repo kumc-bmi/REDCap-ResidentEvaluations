@@ -1,5 +1,5 @@
 set -x
-/bin/bash setup.sh
+#/bin/bash setup.sh
 echo "" >>.secrets
 echo "Have you added your secret api in .secret file ??? Dont version controlled secrets"
 source .secrets

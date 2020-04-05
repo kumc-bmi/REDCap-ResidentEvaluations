@@ -1,7 +1,13 @@
 set -x
 # rm -rf export
 mkdir -p export/attachments
-python3 -m venv env
-source env/bin/activat
+
+virtualenv env
+source env/bin/activate
+
+pip2 install --upgrade pip
 pip2 install -r requirements.txt
-python2 download_redcap_data.py 'config_env_token.ini' '16558-COVID-19-ICU-surge-capacity-survey'
+pip2 freeze >requirements_pip_freeze.txt
+
+which python2
+which pip2
