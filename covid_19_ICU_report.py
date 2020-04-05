@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
+pd.options.mode.chained_assignment = None
 
 
 def map_recordid_to_sit(df):
     record_id_site = df[['record_id', 'site', 'site_oth']]
     record_id_site.site_oth = record_id_site.site_oth.replace(
         np.nan, '', regex=True)
-    record_id_site.site = record_id_site.site + record_id_site.site_oth
+    record_id_site.site = record_id_site.site + " " + record_id_site.site_oth
     del record_id_site['site_oth']
     record_id_site = record_id_site[record_id_site.site.notnull()].sort_values(
         'record_id')
@@ -17,7 +18,7 @@ def get_surge_data(df):
     surge_cols = ['site', 'record_id', 'icu_bed_num',
                   'ventilator_num', 'icu_bed_surge_num', 'ventilator_surge_num']
     df.site_oth = df.site_oth.replace(np.nan, '', regex=True)
-    df.site = df.site + df.site_oth
+    df.site = df.site + " " + df.site_oth
     latest_survey_by_site = df.groupby(['site']).dte_assessed.max()
     latest_survey_by_site = pd.DataFrame(latest_survey_by_site).reset_index()
     latest_df = latest_survey_by_site.merge(
@@ -48,4 +49,5 @@ output_col_orders = ['site', 'record_id',
                      'covidpend_icu_bed', 'covidpend_icu_bed_vent', 'covidcfrm_icu_bed', 'covidcfrm_icu_bed_vent',
                      'icu_bed_num', 'ventilator_num', 'icu_bed_surge_num', 'ventilator_surge_num']
 surge_census = surge_census[output_col_orders]
-surge_census.to_excel('export/output_LP.xlsx', index=False)
+surge_census.to_excel(
+    'export/covid_surge_cenus_redcap_report.xlsx', index=False)
