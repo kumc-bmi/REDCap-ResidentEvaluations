@@ -1,18 +1,3 @@
-# ---
-# jupyter:
-#   jupytext:
-#     formats: ipynb,py:light
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.4.0
-#   kernelspec:
-#     display_name: Python 3
-#     language: python
-#     name: python3
-# ---
-
 import pandas as pd
 import numpy as np
 pd.options.mode.chained_assignment = None
@@ -59,15 +44,6 @@ record_id_site = map_recordid_to_sit(df)
 surge = get_surge_data(df)
 census = get_census_data(df)
 
-exit(0)
-surge
-# 1 instane for each site
-# if more than one, ask to fix it. failed the report and send email. Is there way to notify ?
-
-census
-# more than 1 record per site
-# take latest of redcap_repeat_instance
-
 surge_census = surge.merge(census, on='record_id', how='left')
 output_col_orders = ['site', 'record_id',
                      'covidpend_icu_bed', 'covidpend_icu_bed_vent', 'covidcfrm_icu_bed', 'covidcfrm_icu_bed_vent',
@@ -75,9 +51,3 @@ output_col_orders = ['site', 'record_id',
 surge_census = surge_census[output_col_orders]
 surge_census.to_excel(
     'export/covid_surge_cenus_redcap_report.xlsx', index=False)
-
-census = census.merge(record_id_site, on='record_id')
-surge.merge(census, on='site', how='left',
-            suffixes=('_x', ''))[output_col_orders]
-#surge.join(census,on='site', how='left',rsuffix='_r')
-
