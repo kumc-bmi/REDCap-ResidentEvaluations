@@ -1,5 +1,10 @@
 set -x
 
+#./setup.sh
+
+rm -rf export
+mkdir -p export/attachments
+
 source env/bin/activate
 which python2
 which python3

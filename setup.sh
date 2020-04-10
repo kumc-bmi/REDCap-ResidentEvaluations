@@ -1,6 +1,4 @@
 set -x
-# rm -rf export
-mkdir -p export/attachments
 
 virtualenv env
 source env/bin/activate
