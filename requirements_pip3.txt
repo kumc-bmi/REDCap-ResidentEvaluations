@@ -1,0 +1,9 @@
+pandas==0.24.2
+numpy
+openpyxl
+# testing/devlopment
+# https://dev.to/j0nimost/setting-up-pep8-and-pylint-on-vs-code-34h
+pep8
+pylint
+autopep8
+
