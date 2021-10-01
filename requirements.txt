@@ -6,3 +6,4 @@ pathlib2==2.3.4
 pep8
 pylint
 autopep8
+virtualenv
