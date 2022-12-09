@@ -2,7 +2,7 @@ astroid==1.6.6
 autopep8==1.5.7
 backports.entry-points-selectable==1.1.0
 backports.functools-lru-cache==1.6.4
-certifi==2021.5.30
+certifi==2022.12.7
 chardet==3.0.4
 configparser==4.0.2
 contextlib2==0.6.0.post1
